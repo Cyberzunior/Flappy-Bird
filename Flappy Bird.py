@@ -110,15 +110,12 @@ while running:
     score_text = FONT.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(score_text, (10, 10))
 
-    # End the game if bird hits top/bottom pipe
-    if bird_y > HEIGHT or bird_y < 0:
-        running = False
 
+ 
     # Collisions with pipes and the bird
+    bird_rect = pygame.Rect(bird_x, bird_y, bird_width, bird_height)
     for top_pipe, bottom_pipe in pipes:
-        if bird_x + bird_width > top_pipe.x and bird_x < top_pipe.right:
-            if bird_y < top_pipe.height or bird_y + bird_height > bottom_pipe.top:
-                print(f"Game Over! Your score is: {score}")
+        if bird_rect.colliderect(top_pipe) or bird_rect.colliderect(bottom_pipe):
                 running = False
 
     pygame.display.update()
