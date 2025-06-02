@@ -4,27 +4,30 @@ import sys
 
 # Initializing the Pygame
 pygame.init()
+pygame.display.set_caption("Flappy Bird")
 
 # Window
 WIDTH, HEIGHT = 400, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT)) 
 clock = pygame.time.Clock()
 FONT = pygame.font.SysFont("Arial", 30)
 
-# Colors
+# Colors 
 WHITE = (255, 255, 255)
 BLUE = (0, 163, 255)
 GREEN = (0, 255, 32)
-
-# Bird
-bird_width = 34
-bird_height = 24
+ 
+# Bird  
+bird_width = 45
+bird_height = 45 
 
 def bird(x, y):
-    pygame.draw.rect(screen, BLUE, (x, y, bird_width, bird_height))
+    bird = pygame.image.load("flappy bird.png").convert_alpha()
+    bird = pygame.transform.scale(bird, (bird_width, bird_height)) 
+    return bird 
 
 # Pipes
-def create_pipes():
+def create_pipes(): 
     pipe_width = 52
     pipe_height = random.randint(150, 400)
     pipe_x = WIDTH
@@ -38,7 +41,7 @@ def create_pipes():
 # Bird position
 bird_x = 100    
 bird_y = 300
-gravity = 0.5
+bird_mass = 0.4
 bird_speed = 0
 
 # Pipes list
@@ -55,33 +58,38 @@ passed_pipes = []
 # Game Loop
 running = True
 while running:
-    clock.tick(65 )  # Frame rate
+    clock.tick(60)  # FPS
     screen.fill(WHITE)
+
+    screen.blit(bird(bird_x, bird_y), (bird_x, bird_y))
 
     # Events
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT:   
             running = False
-
+  
         # Bird flap
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                bird_speed = -8                
+                bird_speed = -8    
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button  == 1:
+                bird_speed = -8    
 
     # Bird physics
-    bird_speed += gravity
+    bird_speed += bird_mass
     bird_y += bird_speed
     bird(bird_x, bird_y)
 
     # Pipe spawning
     current_time = pygame.time.get_ticks()
-    if current_time - last_pipe_time > new_pipe:
+    if current_time - last_pipe_time > new_pipe:    
         pipes.append(create_pipes())
         last_pipe_time = current_time
 
     # Move and draw pipes
     new_pipes = []
-    for top_pipe, bottom_pipe in pipes:
+    for top_pipe, bottom_pipe in pipes:  
         top_pipe.x -= 5
         bottom_pipe.x -= 5
 
@@ -102,7 +110,7 @@ while running:
     score_text = FONT.render(f"Score: {score}", True, (0, 0, 0))
     screen.blit(score_text, (10, 10))
 
-    # End the game if bird hits top/bottom
+    # End the game if bird hits top/bottom pipe
     if bird_y > HEIGHT or bird_y < 0:
         running = False
 
@@ -117,4 +125,4 @@ while running:
 
 # Quit
 pygame.quit()
-sys.exit()
+sys.exit()        
