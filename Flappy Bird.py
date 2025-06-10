@@ -5,18 +5,23 @@ import sys
 # Setup
 pygame.init()
 pygame.display.set_caption("Flappy Bird")
-WIDTH = 1700
-HEIGHT = 1700, 800
+WIDTH = 1280
+HEIGHT = 800
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
-font = pygame.font.SysFont("Arial", 30)
+font = pygame.font.SysFont("Times New Roman", 45)
 
 # Colors
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 
+#Background
+
+bg = pygame.image.load("FB bg.jpg")
+
 # Bird settings
-bird_w, bird_h = 45, 45
+bird_w = 45
+bird_h = 45 
 bird_x = 100
 bird_y = 300
 bird_speed = 0
@@ -32,8 +37,6 @@ pipe_gap = 150
 pipe_timer = 1500
 last_pipe_time = pygame.time.get_ticks()
 
-bg = pygame.image.load("flappy-bird-background.jpg")
-
 # Score
 score = 0
 passed = []
@@ -42,17 +45,22 @@ passed = []
 running = True
 while running:
     clock.tick(60)
-    screen.fill(WHITE)
+    screen.blit(bg, (0, 0))
 
     # Events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            bird_speed = -8
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                bird_speed = -8
+            if event.key == pygame.K_s:
+                running = True
+            if event.key == pygame.K_e: 
+                running = False
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             bird_speed = -8
-
+         
     # Bird movement
     bird_speed += gravity
     bird_y += bird_speed
@@ -94,8 +102,12 @@ while running:
         if bird_rect.colliderect(top) or bird_rect.colliderect(bottom):
             running = False
 
+    # Bird out of bounds
+    if bird_y < 0 or bird_y > HEIGHT:
+        running = False
+
     pygame.display.update()
 
-# Exit
+# Exit Games
 pygame.quit()
 sys.exit()
